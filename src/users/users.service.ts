@@ -10,17 +10,26 @@ export class UsersService {
     constructor(@Inject('USER_MODEL') private userModel: Model<User>) { }
 
     async create(createUserDto: CreateUserDto): Promise<User> {
-        const createdUser = new this.userModel(createUserDto);
+        const createdUser = await new this.userModel(createUserDto);
         createdUser.userID = uuidv4();
-        return createdUser.save();
+        createdUser.save();
+        console.log("New User Added!", createdUser);
+        return createdUser;
     }
 
     async findAll(): Promise<User[]> {
-        return this.userModel.find();
+        const users = await this.userModel.find().exec();
+        return users;
     }
 
     async findOne(usersFilterQuery: FilterQuery<User>): Promise<User> {
         return this.userModel.findOne(usersFilterQuery);
+    }
+
+    async findWithUsername(user: string): Promise<User[]> {
+        const reqUser = await this.userModel.find({ username: user }, 'username').exec();
+        console.log("Find by Username called!");
+        return reqUser;
     }
 
     async update(userID: string, updateUserDto: UpdateUserDto): Promise<User> {

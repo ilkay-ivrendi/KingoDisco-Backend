@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req } from '@nestjs/common';
 import { User } from 'src/schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.input';
 import { UpdateUserDto } from './dto/update-user.input';
@@ -9,27 +9,35 @@ export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
     @Post()
-    create(@Body() createUserDto: CreateUserDto) {
-        return this.usersService.create(createUserDto);
+    async create(@Body() createUserDto: CreateUserDto) {
+        return await this.usersService.create(createUserDto);
+    }
+
+    @Get('/user/')
+    async findWithUsername(@Query('username') username: string): Promise<string> {
+        console.log(username);
+        return `This actioun should return a #${username} named user`;
     }
 
     @Get()
-    findAll() {
-        return this.usersService.findAll();
+    async findAll() {
+        return await this.usersService.findAll();
     }
 
-    @Get(':userID')
-    findOne(@Param('userID') userID: string): Promise<User> {
-        return this.usersService.findOne({ userID });
+    @Get('/:userID')
+    async findOne(@Param('userID') userID: string): Promise<User> {
+        console.log('userid called!', userID);
+        return await this.usersService.findOne({ userID });
     }
 
-    @Patch(':userID')
-    update(@Param('userID') userID: string, @Body() updateUserDto: UpdateUserDto) {
-        return this.usersService.update(userID, updateUserDto);
+    @Patch('/:userID')
+    async update(@Param('userID') userID: string, @Body() updateUserDto: UpdateUserDto) {
+        return await this.usersService.update(userID, updateUserDto);
     }
 
-    @Delete(':userID')
-    remove(@Param('userID') userID: string) {
-        return this.usersService.remove(userID);
+    @Delete('/:userID')
+    async remove(@Param('userID') userID: string) {
+        return await this.usersService.remove(userID);
     }
+
 }
