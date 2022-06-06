@@ -26,8 +26,8 @@ export class UsersService {
         return this.userModel.findOne(usersFilterQuery);
     }
 
-    async findWithUsername(user: string): Promise<User[]> {
-        const reqUser = await this.userModel.find({ username: user }, 'username').exec();
+    async findWithUsername(username: string): Promise<User> {
+        const reqUser = await this.userModel.findOne({ username }).exec();
         console.log("Find by Username called!");
         return reqUser;
     }
